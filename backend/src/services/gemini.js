@@ -3,9 +3,9 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // Initialize Gemini API
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Get the Gemini model - using gemini-1.5-flash for multimodal capabilities
+// Get the Gemini model - using gemini-pro for better compatibility
 const model = genAI.getGenerativeModel({ 
-  model: 'gemini-1.5-flash',
+  model: 'gemini-pro',
   generationConfig: {
     temperature: 0.7,
     topK: 40,
@@ -85,6 +85,10 @@ IMPORTANT GUIDELINES:
 Analyze the image now:`;
 
   try {
+    console.log('📸 Starting image analysis with Gemini...');
+    console.log('🔑 API Key configured:', !!process.env.GEMINI_API_KEY);
+    console.log('📏 Image size:', imageBase64.length, 'bytes');
+    
     const result = await model.generateContent([
       prompt,
       {
@@ -98,6 +102,8 @@ Analyze the image now:`;
     const response = await result.response;
     const analysis = response.text();
 
+    console.log('✅ Analysis completed successfully');
+
     // Try to extract component positions (simplified - in production you'd use vision API)
     const components = extractComponentMentions(analysis);
 
@@ -106,8 +112,9 @@ Analyze the image now:`;
       components,
     };
   } catch (error) {
-    console.error('Gemini API Error:', error);
-    throw new Error('Failed to analyze image with AI');
+    console.error('❌ Gemini API Error:', error.message);
+    console.error('Error details:', error);
+    throw new Error(`Failed to analyze image: ${error.message}`);
   }
 }
 

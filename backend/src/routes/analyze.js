@@ -28,17 +28,24 @@ const upload = multer({
  */
 router.post('/analyze', upload.single('image'), async (req, res, next) => {
   try {
+    console.log('🚀 Analyze request received');
+    
     if (!req.file) {
+      console.log('❌ No file provided');
       return res.status(400).json({ error: 'No image file provided' });
     }
+
+    console.log('📁 File received:', req.file.originalname, 'Size:', req.file.size);
 
     const difficulty = req.body.difficulty || 'Beginner';
     const sessionId = uuidv4();
 
+    console.log('🔄 Converting image to base64...');
     // Convert buffer to base64
     const imageBase64 = req.file.buffer.toString('base64');
     const imageMimeType = req.file.mimetype;
 
+    console.log('🤖 Calling Gemini API...');
     // Analyze image with Gemini
     const analysisResult = await analyzeImageWithGemini(
       imageBase64,
@@ -46,6 +53,7 @@ router.post('/analyze', upload.single('image'), async (req, res, next) => {
       difficulty
     );
 
+    console.log('💾 Storing session data...');
     // Store session data in Supabase
     await sessionStore.set(sessionId, {
       imageData: imageBase64,
@@ -61,6 +69,7 @@ router.post('/analyze', upload.single('image'), async (req, res, next) => {
       difficulty,
     });
 
+    console.log('✅ Analysis complete. Session ID:', sessionId);
     res.json({
       sessionId,
       analysis: analysisResult.analysis,
@@ -68,6 +77,8 @@ router.post('/analyze', upload.single('image'), async (req, res, next) => {
     });
 
   } catch (error) {
+    console.error('❌ Analyze error:', error.message);
+    console.error('Full error:', error);
     next(error);
   }
 });
