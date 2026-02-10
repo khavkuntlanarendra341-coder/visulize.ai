@@ -3,9 +3,9 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // Initialize Gemini API
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Get the Gemini model - using gemini-1.5-flash (latest available model)
+//FIXED : Using gemini-1.5-flash (supports vision)
 const model = genAI.getGenerativeModel({ 
-  model: "gemini-1.5-flash",
+  model: "gemini-2.5-flash",
   generationConfig: {
     temperature: 0.7,
     topK: 40,
