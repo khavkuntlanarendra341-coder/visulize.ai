@@ -1,0 +1,26 @@
+cd backend
+notepad .gitignore
+```
+
+When Notepad asks to create a new file, click **Yes**.
+
+### **Step 2: Paste this content:**
+```
+# Environment variables (contains API keys!)
+.env
+.env.local
+
+# Dependencies
+node_modules/
+
+# Test files (not needed in production)
+test-*.js
+list-models.js
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
